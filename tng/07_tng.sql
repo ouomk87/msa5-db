@@ -233,8 +233,72 @@ ORDER BY tite.title_code
 
 
 -- ------------------------------
--- 전체 평균 급여보다 높은 급여를 받은 기록을 조회
+-- 전체 평균 급여보다 높은 급여를 받은 기록을 조회 
 
+
+SELECT
+		sla.salary
+		
+	FROM 	salaries sla
+	 WHERE 
+	 	sla.salary >
+	 		(SELECT
+		 		AVG(salary)
+		 		FROM salaries
+	 		)
+	 ;
+	 
+-- 전체 평균 급여보다 높은 급여를 받는 사원의 사번, 이름, 현재급여를 조회	 
+SELECT
+emp.emp_id
+,emp.`name`
+,sal.salary
+FROM employees emp
+	JOIN salaries sal
+		ON emp.emp_id = sal.emp_id
+		 AND sal.end_at IS NULL
+		 AND emp.fire_at IS NULL
+WHERE 
+	sal.salary >= (
+		SELECT
+		 		AVG(salary)
+ 		FROM salaries
+ 		where
+ 			end_at is NULL
+		)
+ORDER BY sal.salary
+;
+-- 서브쿼리 별칭을 안 주는 이유는 ()안에 쓰는걸 먼저 계산하기떄문에 헤갈리지않음 
 
 
 -- 가장 높은 급여를 받은 이력이있는 사원의 사번과 급여를 조회
+SELECT
+		emp.emp_id
+		,sal.salary
+	
+	FROM employees emp
+		JOIN salaries sal
+			ON emp.emp_id = sal.emp_id
+	WHERE sal.salary = 
+			(select
+				MAX(salary)
+				FROM salaries 
+			)
+	;
+
+-- 선생님 코드
+	
+SELECT
+	emp_id
+	,salary
+ FROM salaries 
+ WHERE 
+ 		salary = 
+			(select
+				MAX(salary)
+			FROM salaries 
+		)
+;
+ 		
+	
+	
